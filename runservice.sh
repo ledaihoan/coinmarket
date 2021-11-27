@@ -5,6 +5,7 @@ echo "Installing dependencies"
 npm i
 if [ "x$2" != "x" ]; then
 APP_PROF="$2"
+npm run build
 else
 APP_PROF="production"
 fi
