@@ -2,6 +2,7 @@
 USER=root
 SERVER=ledaihoan.com
 DEPLOY_PATH=/data/services/coinmarket
+npm install
 npm run build
 rsync -auvr --delete ./dist ${USER}@${SERVER}:${DEPLOY_PATH}
 rsync -auvr --delete ./runservice.sh ${USER}@${SERVER}:${DEPLOY_PATH}
