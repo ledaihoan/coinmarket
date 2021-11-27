@@ -48,4 +48,45 @@ export class AppService {
     }
     return orderBookData;
   }
+
+  async getLimitOrderBookData(totalBidAmount = 5, totalAskSize = 150) {
+    let orderBookData;
+    try {
+      orderBookData = Object.assign({}, await this.cacheManager.get("part1"));
+    } catch (e) {
+      this.logger.debug("GET ORDER BOOK DATA from CACHE", e.messsage);
+    }
+    if(!orderBookData) {
+      let self = this;
+      setTimeout(() => {
+        self.handleCron();
+      }, 2000);
+      return null;
+    }
+    let countBidAmount = 0;
+    let countAskSize = 0;
+    let updatedAt = orderBookData.updatedAt || "NONE";
+    let bids = [];
+    let asks = [];
+    if(Array.isArray(orderBookData.bids)) {
+      for(let i = 0; i < orderBookData.bids.length; i++) {
+        let bid = orderBookData.bids[i];
+        let amount = bid[0] * bid[1];
+        if(countBidAmount + amount > totalBidAmount) break;
+        countBidAmount += amount;
+        bids.push(bid);
+      }
+    }
+    if(Array.isArray(orderBookData.asks)) {
+      for(let i = 0; i < orderBookData.asks.length; i++) {
+        let ask = orderBookData.asks[i];
+        let askSize = parseFloat(ask[1]);
+        if(countAskSize + askSize > totalAskSize) break;
+        countAskSize += askSize;
+        asks.push(ask);
+      }
+    }
+    let hasData = bids.length > 0;
+    return {bids, asks, countBidAmount, countAskSize, updatedAt, hasData};
+  }
 }

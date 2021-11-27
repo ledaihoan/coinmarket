@@ -12,7 +12,7 @@ export class AppController {
   }
   @Get("/part1")
   @Render('part1')
-  async getOrderBookRaw() {
+  async getLatestOrderBookData() {
     const orderBookData = await this.appService.getOrderBookData();
     let bids = [], asks = [];
     let updatedAt = "none";
@@ -27,5 +27,10 @@ export class AppController {
     }
     let hasData = bids.length > 0;
     return {bids, asks, hasData, updatedAt};
+  }
+  @Get('/part2')
+  @Render('part2')
+  async getLatestLimitedOrderBookData() {
+    return await this.appService.getLimitOrderBookData();
   }
 }
