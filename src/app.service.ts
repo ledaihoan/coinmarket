@@ -53,6 +53,7 @@ export class AppService {
     let orderBookData;
     try {
       orderBookData = Object.assign({}, await this.cacheManager.get("part1"));
+      orderBookData.updatedAt = await this.cacheManager.get("part1UpdatedAt");
     } catch (e) {
       this.logger.debug("GET ORDER BOOK DATA from CACHE", e.messsage);
     }
